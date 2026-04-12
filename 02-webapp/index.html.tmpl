@@ -321,6 +321,16 @@
 
   // ===================== Auth State =================
   onAuthStateChanged(auth, user => {
+    // Always reset editor state on any auth change to prevent data leaking
+    // between users when switching accounts.
+    selectedId    = null;
+    notes         = [];
+    elTitle.value = "";
+    elNote.value  = "";
+    setStatus("");
+    setListStatus("");
+    renderNotes();
+
     if (user) {
       loginPanel.style.display  = "none";
       notesApp.style.display    = "grid";
