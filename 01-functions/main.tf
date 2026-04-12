@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 5.0"
+    }
     random = {
       source  = "hashicorp/random"
       version = "~> 3.0"
@@ -20,6 +24,12 @@ locals {
 }
 
 provider "google" {
+  credentials = file("${path.module}/../credentials.json")
+  project     = local.credentials.project_id
+  region      = "us-central1"
+}
+
+provider "google-beta" {
   credentials = file("${path.module}/../credentials.json")
   project     = local.credentials.project_id
   region      = "us-central1"
@@ -92,13 +102,6 @@ resource "google_cloudfunctions2_function" "notes" {
   }
 }
 
-resource "google_cloud_run_service_iam_member" "notes_public" {
-  location = google_cloudfunctions2_function.notes.location
-  service  = google_cloudfunctions2_function.notes.name
-  role     = "roles/run.invoker"
-  member   = "allUsers"
-}
-
-output "notes_url" {
+output "notes_uri" {
   value = google_cloudfunctions2_function.notes.service_config[0].uri
 }

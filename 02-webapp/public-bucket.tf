@@ -27,6 +27,14 @@ resource "google_storage_bucket_object" "index_html" {
   cache_control = "no-store, no-cache, must-revalidate, max-age=0"
 }
 
+resource "google_storage_bucket_object" "config_json" {
+  name          = "config.json"
+  bucket        = google_storage_bucket.webapp.name
+  source        = "${path.module}/config.json"
+  content_type  = "application/json"
+  cache_control = "no-store, no-cache, must-revalidate, max-age=0"
+}
+
 resource "google_storage_bucket_object" "favicon" {
   name         = "favicon.ico"
   bucket       = google_storage_bucket.webapp.name

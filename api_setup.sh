@@ -23,7 +23,12 @@ gcloud services enable \
   run.googleapis.com \
   cloudbuild.googleapis.com \
   eventarc.googleapis.com \
-  artifactregistry.googleapis.com
+  artifactregistry.googleapis.com \
+  identitytoolkit.googleapis.com \
+  apigateway.googleapis.com \
+  servicemanagement.googleapis.com \
+  servicecontrol.googleapis.com \
+  apikeys.googleapis.com
 
 echo "NOTE: Ensuring Firestore database exists in native mode..."
 gcloud firestore databases create \

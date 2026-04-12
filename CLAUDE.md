@@ -1,49 +1,60 @@
-# CLAUDE.md — gcp-crud-example
+# CLAUDE.md — gcp-identity-app
 
-A serverless notes CRUD API on GCP. One Cloud Function handles all five REST operations, Firestore stores the data, and a static GCS site provides a browser UI. Ported from an equivalent AWS solution (Lambda + DynamoDB + API Gateway).
+A serverless, authenticated notes CRUD API on GCP. Ported from gcp-crud-example with Identity Platform (Firebase Auth) and Cloud API Gateway added for per-user data isolation. One Cloud Function handles all five REST operations; Firestore persists data; Cloud API Gateway validates Firebase JWT tokens; a static GCS SPA provides the browser UI.
 
 ---
 
 ## What This Project Does
 
-Clients hit a single Cloud Function (`notes`) that routes all HTTP CRUD operations by method and path. Firestore persists the notes. A static HTML frontend served from GCS makes API calls directly to the function.
+Users sign in via the SPA using Firebase email/password auth (Identity Platform). The SPA obtains a Firebase ID token and passes it as `Authorization: Bearer <token>` to Cloud API Gateway. The gateway validates the token against Identity Platform's JWKS, then forwards the request to the Cloud Function with decoded JWT claims in `X-Apigateway-Api-Userinfo`. The function extracts the Firebase UID (`sub`) as the Firestore owner key — scoping all operations to that user.
 
-**Base URL after deploy:**
+**Gateway URL after deploy:**
 ```
-https://us-central1-{project_id}.cloudfunctions.net/notes
+https://{gateway-id}-{hash}-uc.a.run.app
 ```
 
 | Method | Path | Operation |
 |--------|------|-----------|
 | POST | `/notes` | Create note |
-| GET | `/notes` | List all notes |
+| GET | `/notes` | List user's notes |
 | GET | `/notes/{id}` | Get single note |
 | PUT | `/notes/{id}` | Update note |
 | DELETE | `/notes/{id}` | Delete note |
+
+All endpoints except OPTIONS require `Authorization: Bearer <firebase_id_token>`.
 
 ---
 
 ## Architecture
 
 ```
-Browser / curl
+Browser (SPA on GCS)
      │
-     ▼
-Cloud Function: notes  (Python 3.11, HTTP trigger, public)
-     │  routes by request.method + request.path
-     ├── POST   /        → _create()
-     ├── GET    /        → _list()
-     ├── GET    /{id}    → _get()
-     ├── PUT    /{id}    → _update()
-     └── DELETE /{id}    → _delete()
-                │
-                ▼
-          Firestore (Native mode)
-          collection: notes
-          document key: UUID
+     ├── Loads config.json (apiKey, authDomain, projectId, apiBaseUrl)
+     ├── Signs in via Firebase JS SDK (email/password)
+     │   └── getIdToken() → Firebase ID token (JWT)
+     │
+     └── API calls: Authorization: Bearer <id_token>
+          │
+          ▼
+     Cloud API Gateway
+     - Validates JWT: issuer=securetoken.google.com/{project_id}
+     - Passes decoded claims as X-Apigateway-Api-Userinfo header
+     - Forwards to Cloud Run using notes-gateway-sa OIDC token
+          │
+          ▼
+     Cloud Function: notes  (Python 3.11, 2nd Gen, private)
+     - Extracts owner = claims["sub"]  (Firebase UID)
+     - Routes by request.method + request.path
+          │
+          ▼
+     Firestore (Native mode)
+     collection: notes
+     document key: UUID4
+     owner field: Firebase UID (scopes all queries)
 ```
 
-**Why one function instead of five:** Cloud Functions 2nd Gen pass the full request path, so internal routing eliminates the need for a separate API Gateway layer. The function named `notes` sits at `.../notes`, and any sub-path (e.g., `.../notes/abc123`) appears as `request.path = "/abc123"`.
+**Path routing:** API Gateway uses `APPEND_PATH_TO_ADDRESS` to the Cloud Run URI, so the Cloud Function sees the full path (`/notes` or `/notes/{id}`). The function splits on `/` to extract the note ID.
 
 ---
 
@@ -52,18 +63,21 @@ Cloud Function: notes  (Python 3.11, HTTP trigger, public)
 ```
 01-functions/
   notes/
-    main.py           Python: all five CRUD handlers + router
-    requirements.txt  google-cloud-firestore
-  main.tf             Terraform: provider, SA, GCS source bucket, function, IAM
+    main.py             Python: auth-aware CRUD handlers + router
+    requirements.txt    google-cloud-firestore
+  main.tf               Terraform: provider (GA + beta), SA, source bucket, Cloud Function
+  identity.tf           Terraform: Identity Platform config, browser API key
+  api_gateway.tf        Terraform: gateway SA, Cloud Run IAM, API GW API/config/gateway
+  openapi.yaml.tpl      API Gateway OpenAPI spec template (project_id + function_uri injected)
 02-webapp/
-  index.html.tmpl     Web UI template — API_BASE injected at deploy time
-  main.tf             Terraform: GCP provider
-  public-bucket.tf    Terraform: public GCS static site
-api_setup.sh          Enable GCP APIs, create Firestore database
-check_env.sh          Pre-flight: verify gcloud/terraform/jq, credentials.json
-apply.sh              Full deployment (both phases + validation)
-destroy.sh            Teardown in reverse order
-validate.sh           End-to-end CRUD smoke test via curl
+  index.html.tmpl       SPA template — copied to index.html at deploy time
+  main.tf               Terraform: GCP provider
+  public-bucket.tf      Terraform: public GCS static site + config.json + favicon
+api_setup.sh            Enable GCP APIs (incl. Identity Platform, API Gateway), create Firestore
+check_env.sh            Pre-flight: verify gcloud/terraform/jq, credentials.json
+apply.sh                Full deployment (both phases + validation)
+destroy.sh              Teardown in reverse order
+validate.sh             End-to-end CRUD smoke test via Firebase REST API
 ```
 
 ---
@@ -72,7 +86,7 @@ validate.sh           End-to-end CRUD smoke test via curl
 
 - `gcloud`, `terraform`, `jq` in PATH
 - `credentials.json` (GCP service account key) in repo root
-- Service account needs: Cloud Functions, Firestore, Cloud Storage, Cloud Run, Cloud Build, IAM
+- Service account needs: Cloud Functions, Firestore, Cloud Storage, Cloud Run, Cloud Build, IAM, Identity Platform, API Gateway, API Keys
 
 ---
 
@@ -90,79 +104,107 @@ validate.sh           End-to-end CRUD smoke test via curl
 ```
 
 `apply.sh` runs in two phases:
-1. **`check_env.sh`** → validates tools, authenticates gcloud, calls `api_setup.sh` to enable APIs and init Firestore
-2. **`01-functions`** → archives Python source, uploads to GCS, deploys Cloud Function, creates service account
-3. Injects `API_BASE` into `index.html.tmpl` via `envsubst`
-4. **`02-webapp`** → deploys public GCS bucket, uploads generated `index.html`
-5. **`validate.sh`** → creates, lists, gets, updates, and deletes 5 test notes
+1. **`check_env.sh`** → validates tools, authenticates gcloud, calls `api_setup.sh`
+2. **`01-functions`** → Cloud Function, Identity Platform, API Gateway, API key
+3. Reads `gateway_url` and `firebase_api_key` from Terraform outputs
+4. Generates `02-webapp/config.json` (apiKey, authDomain, projectId, apiBaseUrl)
+5. Copies `index.html.tmpl` → `index.html` (no substitution; config loaded at runtime)
+6. **`02-webapp`** → public GCS bucket, uploads index.html, config.json, favicon
+7. **`validate.sh`** → creates test user, runs full CRUD via API, deletes test user
 
 ---
 
 ## Terraform Modules
 
 ### 01-functions
-- `google_service_account` `notes-sa` with `roles/datastore.user`
-- `google_storage_bucket` for function source code (random suffix)
-- `data.archive_file` zips the `notes/` directory; re-zips on any source change
-- `google_cloudfunctions2_function` `notes` (Python 3.11, 2nd Gen, HTTP)
-- `google_cloud_run_service_iam_member` — `allUsers` → `roles/run.invoker` (public)
-- Output: `notes_url`
+- `google_service_account` `notes-sa` — Firestore access (roles/datastore.user)
+- `google_storage_bucket` — function source code (random suffix)
+- `data.archive_file` — zips `notes/` directory
+- `google_cloudfunctions2_function` `notes` — Python 3.11, 2nd Gen, HTTP, **private** (no allUsers)
+- `google_identity_platform_config` — enables Identity Platform with email/password sign-in
+- `google_apikeys_key` `webapp` — browser API key scoped to identitytoolkit.googleapis.com
+- `google_service_account` `notes-gateway-sa` — gateway backend auth SA
+- `google_cloud_run_service_iam_member` `gateway_invoker` — gateway SA → roles/run.invoker
+- `google_api_gateway_api` — API resource
+- `google_api_gateway_api_config` — OpenAPI spec (Firebase JWT security + Cloud Run backend)
+- `google_api_gateway_gateway` — deployed gateway (us-central1)
+- Outputs: `notes_uri`, `gateway_url`, `firebase_api_key`
 
 ### 02-webapp
 - `google_storage_bucket` `notes-web-{suffix}` with public read
-- `google_storage_bucket_object` uploads `index.html` (generated from template)
+- `google_storage_bucket_object` — uploads index.html, config.json, favicon.ico
 - Output: `webapp_url`
 
 ---
 
-## Cloud Function Routing
+## Authentication Flow
 
-**File:** [01-functions/notes/main.py](01-functions/notes/main.py)
+1. SPA loads `config.json` (apiKey, authDomain, projectId, apiBaseUrl)
+2. User submits email + password → Firebase JS SDK calls Identity Platform
+3. Firebase returns an ID token (JWT, valid 1 hour, auto-refreshes via `getIdToken()`)
+4. SPA includes `Authorization: Bearer <id_token>` on every API request
+5. API Gateway validates signature against JWKS, rejects expired/invalid tokens (401)
+6. Gateway encodes claims as base64url JSON in `X-Apigateway-Api-Userinfo` header
+7. Cloud Function decodes the header, extracts `sub` (Firebase UID), uses it as `owner`
 
-Entry point `notes(request)` dispatches based on `request.method` and `request.path.strip("/")`:
+---
+
+## Cloud Function Path Routing
+
+Since requests arrive via API Gateway with `APPEND_PATH_TO_ADDRESS` targeting the Cloud Run URI:
 
 ```
-request.path = "/"      → collection operations (POST → create, GET → list)
-request.path = "/{id}"  → item operations (GET → get, PUT → update, DELETE → delete)
+request.path = "/notes"       → collection ops (POST → create, GET → list)
+request.path = "/notes/{id}"  → item ops (GET → get, PUT → update, DELETE → delete)
 ```
 
-CORS preflight (`OPTIONS`) is handled first and returns 204 with appropriate headers.
+Path parsing:
+```python
+parts = request.path.rstrip("/").split("/")  # ["", "notes"] or ["", "notes", "{id}"]
+note_id = parts[2] if len(parts) > 2 else None
+```
 
 **Firestore data model:**
 - Collection: `notes`
 - Document ID: UUID4 (same as `id` field)
-- Fields: `owner` (always `"global"`), `id`, `title`, `note`, `created_at`, `updated_at`
+- Fields: `owner` (Firebase UID), `id`, `title`, `note`, `created_at`, `updated_at`
 
 ---
 
-## Web UI
+## OpenAPI Security Definition
 
-`02-webapp/index.html.tmpl` is a single-page JavaScript app. It uses `${API_BASE}` as a placeholder replaced at deploy time by `apply.sh` via `envsubst`:
-
-```bash
-export API_BASE="https://us-central1-${project_id}.cloudfunctions.net"
-envsubst '${API_BASE}' < 02-webapp/index.html.tmpl > 02-webapp/index.html
+```yaml
+securityDefinitions:
+  firebase:
+    type: oauth2
+    flow: implicit
+    x-google-issuer: "https://securetoken.google.com/{project_id}"
+    x-google-jwks_uri: "https://www.googleapis.com/.../securetoken@system.gserviceaccount.com"
+    x-google-audiences: "{project_id}"
 ```
 
-The JS calls `API_BASE_URL + "/notes"` and `API_BASE_URL + "/notes/" + id`, which map directly to the `notes` function URL and its sub-paths.
+OPTIONS operations have no security requirement (CORS preflight passes through freely).
 
 ---
 
 ## Test Manually
 
 ```bash
-BASE="https://us-central1-$(jq -r '.project_id' credentials.json).cloudfunctions.net/notes"
+# Get a Firebase ID token via REST API
+API_KEY=$(jq -r '.apiKey' 02-webapp/config.json)
+GATEWAY=$(jq -r '.apiBaseUrl' 02-webapp/config.json)
 
-# Create
-curl -X POST "$BASE" -H "Content-Type: application/json" \
+TOKEN=$(curl -sf -X POST \
+  "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@example.com","password":"yourpassword","returnSecureToken":true}' \
+  | jq -r '.idToken')
+
+# Create / List / Get / Update / Delete
+curl -X POST "${GATEWAY}/notes" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
   -d '{"title":"Hello","note":"World"}'
 
-# List
-curl "$BASE"
-
-# Get / Update / Delete (replace ID)
-curl "$BASE/{id}"
-curl -X PUT "$BASE/{id}" -H "Content-Type: application/json" \
-  -d '{"title":"Updated","note":"Body"}'
-curl -X DELETE "$BASE/{id}"
+curl "${GATEWAY}/notes" -H "Authorization: Bearer ${TOKEN}"
 ```

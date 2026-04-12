@@ -20,11 +20,20 @@
       padding: 16px;
       background: #020617;
       border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     h1 {
       margin: 0;
       font-size: 18px;
+      flex: 1;
+    }
+
+    #userEmail {
+      font-size: 12px;
+      color: #94a3b8;
     }
 
     main {
@@ -58,7 +67,7 @@
     }
 
     button.secondary { background: #475569; }
-    button.delete { background: #dc2626; }
+    button.delete    { background: #dc2626; }
 
     input, textarea {
       width: 100%;
@@ -80,7 +89,7 @@
       cursor: pointer;
     }
 
-    .note:hover { background: #020617; }
+    .note:hover  { background: #020617; }
     .note.active { background: #1e293b; }
 
     .status {
@@ -89,6 +98,30 @@
       color: #94a3b8;
       white-space: pre-wrap;
     }
+
+    /* ===================== Login Panel ===================== */
+
+    #loginPanel {
+      max-width: 360px;
+      margin: 60px auto;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    #loginPanel h2 {
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+
+    #loginPanel .row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    #loginStatus { color: #f87171; }
 
     /* ===================== Modal ===================== */
 
@@ -118,7 +151,7 @@
       font-weight: 600;
     }
 
-    .modal-body { margin-top: 12px; }
+    .modal-body   { margin-top: 12px; }
 
     .modal-footer {
       margin-top: 12px;
@@ -132,7 +165,7 @@
     .busy-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0,0,0,0.35);
       backdrop-filter: blur(2px);
       display: none;
       align-items: center;
@@ -140,10 +173,7 @@
       z-index: 2000;
     }
 
-    .busy-overlay.active {
-      display: flex;
-      cursor: wait;
-    }
+    .busy-overlay.active { display: flex; cursor: wait; }
 
     .busy-box {
       padding: 16px 18px;
@@ -169,11 +199,27 @@
 
 <header>
   <h1>Notes Demo</h1>
+  <span id="userEmail"></span>
+  <button id="btnSignOut" class="secondary" style="display:none">Sign out</button>
 </header>
 
-<main>
+<!-- ===================== Login Panel ===================== -->
 
-  <!-- Notes list -->
+<div id="loginPanel">
+  <h2>Sign in</h2>
+  <input id="loginEmail"    type="email"    placeholder="Email" />
+  <input id="loginPassword" type="password" placeholder="Password" />
+  <div class="row">
+    <button id="btnSignIn">Sign in</button>
+    <button id="btnCreateAccount" class="secondary">Create account</button>
+  </div>
+  <div id="loginStatus" class="status"></div>
+</div>
+
+<!-- ===================== Notes App ===================== -->
+
+<main id="notesApp" style="display:none">
+
   <section>
     <div style="display:flex; gap:8px; margin-bottom:10px;">
       <button id="btnRefresh" class="secondary">Refresh</button>
@@ -183,7 +229,6 @@
     <div id="listStatus" class="status"></div>
   </section>
 
-  <!-- Editor -->
   <section>
     <input id="title" placeholder="Title (required)" />
     <textarea id="note" placeholder="Note (optional)"></textarea>
@@ -225,27 +270,70 @@
   <div class="busy-box">Working…</div>
 </div>
 
-<script>
+<script type="module">
+  import { initializeApp }
+    from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+  } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+
   // ===================== Config =====================
-  const API_BASE_URL = "${API_BASE}";
+  // config.json is generated at deploy time and uploaded to this bucket.
+  const config = await fetch('./config.json').then(r => r.json());
+
+  const app  = initializeApp({
+    apiKey:    config.apiKey,
+    authDomain: config.authDomain,
+    projectId:  config.projectId,
+  });
+  const auth = getAuth(app);
 
   // ===================== State ======================
-  let notes = [];
+  let notes      = [];
   let selectedId = null;
 
   // ===================== Elements ===================
+  const loginPanel  = document.getElementById("loginPanel");
+  const notesApp    = document.getElementById("notesApp");
+  const elUserEmail = document.getElementById("userEmail");
+  const btnSignOut  = document.getElementById("btnSignOut");
+
+  const elLoginEmail    = document.getElementById("loginEmail");
+  const elLoginPassword = document.getElementById("loginPassword");
+  const elLoginStatus   = document.getElementById("loginStatus");
+
   const elNotes      = document.getElementById("notes");
   const elTitle      = document.getElementById("title");
   const elNote       = document.getElementById("note");
   const elStatus     = document.getElementById("status");
   const elListStatus = document.getElementById("listStatus");
 
-  const modal        = document.getElementById("newModal");
-  const modalTitle   = document.getElementById("modalTitle");
-  const modalNote    = document.getElementById("modalNote");
-  const modalStatus  = document.getElementById("modalStatus");
+  const modal       = document.getElementById("newModal");
+  const modalTitle  = document.getElementById("modalTitle");
+  const modalNote   = document.getElementById("modalNote");
+  const modalStatus = document.getElementById("modalStatus");
 
-  const busyOverlay  = document.getElementById("busyOverlay");
+  const busyOverlay = document.getElementById("busyOverlay");
+
+  // ===================== Auth State =================
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginPanel.style.display  = "none";
+      notesApp.style.display    = "grid";
+      btnSignOut.style.display  = "";
+      elUserEmail.textContent   = user.email;
+      loadNotes();
+    } else {
+      loginPanel.style.display  = "";
+      notesApp.style.display    = "none";
+      btnSignOut.style.display  = "none";
+      elUserEmail.textContent   = "";
+    }
+  });
 
   // ===================== Busy State =================
   function setBusy(isBusy) {
@@ -253,36 +341,40 @@
     busyOverlay.classList.toggle("active", isBusy);
   }
 
-  // ===================== Helpers ====================
+  // ===================== API Helper =================
   async function api(path, method = "GET", body) {
-    const url = API_BASE_URL + path;
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not signed in");
+
+    // getIdToken() auto-refreshes the token if it has expired.
+    const token = await user.getIdToken();
+    const url   = config.apiBaseUrl + path;
+
     console.log(`[API] ${method} ${url}`, body ? JSON.stringify(body) : "");
 
     const res = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined
+      headers: {
+        "Content-Type":  "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
     });
 
-    const text = await res.text();
+    const text   = await res.text();
     const parsed = text ? JSON.parse(text) : null;
 
     if (!res.ok) {
       console.error(`[API] ${method} ${url} -> ${res.status}`, text);
-      throw new Error(text || res.status);
+      throw new Error(text || String(res.status));
     }
 
     console.log(`[API] ${method} ${url} -> ${res.status}`, parsed);
     return parsed;
   }
 
-  function setStatus(msg) {
-    elStatus.textContent = msg || "";
-  }
-
-  function setListStatus(msg) {
-    elListStatus.textContent = msg || "";
-  }
+  function setStatus(msg)     { elStatus.textContent     = msg || ""; }
+  function setListStatus(msg) { elListStatus.textContent = msg || ""; }
 
   // ===================== CRUD =======================
   async function loadNotes() {
@@ -306,7 +398,7 @@
     try {
       const n = await api(`/notes/${id}`);
       elTitle.value = n.title || "";
-      elNote.value  = n.note || "";
+      elNote.value  = n.note  || "";
       selectedId = id;
       renderNotes();
       setStatus("Loaded note");
@@ -321,10 +413,7 @@
     const title = elTitle.value.trim();
     const note  = elNote.value || "";
 
-    if (!title) {
-      setStatus("Title is required");
-      return;
-    }
+    if (!title) { setStatus("Title is required"); return; }
 
     setBusy(true);
     try {
@@ -345,17 +434,13 @@
   }
 
   async function deleteNote() {
-    if (!selectedId) {
-      setStatus("Select a note to delete");
-      return;
-    }
-
+    if (!selectedId) { setStatus("Select a note to delete"); return; }
     if (!confirm("Delete this note?")) return;
 
     setBusy(true);
     try {
       await api(`/notes/${selectedId}`, "DELETE");
-      selectedId = null;
+      selectedId    = null;
       elTitle.value = "";
       elNote.value  = "";
       await loadNotes();
@@ -379,7 +464,7 @@
 
     if (notes.length === 0) {
       const empty = document.createElement("div");
-      empty.className = "status";
+      empty.className   = "status";
       empty.textContent = "No notes yet. Click New to create one.";
       elNotes.appendChild(empty);
     }
@@ -387,36 +472,28 @@
 
   // ===================== Modal ======================
   function openModal() {
-    modalTitle.value = "";
-    modalNote.value = "";
+    modalTitle.value        = "";
+    modalNote.value         = "";
     modalStatus.textContent = "";
-    modal.style.display = "flex";
+    modal.style.display     = "flex";
     setTimeout(() => modalTitle.focus(), 0);
   }
 
-  function closeModal() {
-    modal.style.display = "none";
-  }
+  function closeModal() { modal.style.display = "none"; }
 
   async function createFromModal() {
     const title = modalTitle.value.trim();
     const note  = modalNote.value || "";
 
-    if (!title) {
-      modalStatus.textContent = "Title is required";
-      return;
-    }
+    if (!title) { modalStatus.textContent = "Title is required"; return; }
 
     setBusy(true);
     modalStatus.textContent = "Creating...";
     try {
       const res = await api("/notes", "POST", { title, note });
-      selectedId = res.id;
-
-      // Reuse main editor panel
+      selectedId    = res.id;
       elTitle.value = title;
       elNote.value  = note;
-
       closeModal();
       await loadNotes();
       setStatus("Created note");
@@ -427,19 +504,57 @@
     }
   }
 
-  // Close modal by clicking backdrop
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", e => {
+    if (modal.style.display === "flex" && e.key === "Escape") closeModal();
   });
 
-  // Esc closes modal
-  document.addEventListener("keydown", (e) => {
-    if (modal.style.display === "flex" && e.key === "Escape") {
-      closeModal();
+  // ===================== Auth UI ====================
+  async function signIn() {
+    elLoginStatus.textContent = "";
+    const email    = elLoginEmail.value.trim();
+    const password = elLoginPassword.value;
+
+    if (!email || !password) {
+      elLoginStatus.textContent = "Email and password are required";
+      return;
     }
-  });
+
+    setBusy(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (e) {
+      elLoginStatus.textContent = e.message;
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function createAccount() {
+    elLoginStatus.textContent = "";
+    const email    = elLoginEmail.value.trim();
+    const password = elLoginPassword.value;
+
+    if (!email || !password) {
+      elLoginStatus.textContent = "Email and password are required";
+      return;
+    }
+
+    setBusy(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (e) {
+      elLoginStatus.textContent = e.message;
+    } finally {
+      setBusy(false);
+    }
+  }
 
   // ===================== Wiring =====================
+  document.getElementById("btnSignIn").addEventListener("click", signIn);
+  document.getElementById("btnCreateAccount").addEventListener("click", createAccount);
+  btnSignOut.addEventListener("click", () => signOut(auth));
+
   document.getElementById("btnRefresh").addEventListener("click", loadNotes);
   document.getElementById("btnNew").addEventListener("click", openModal);
   document.getElementById("btnSave").addEventListener("click", saveNote);
@@ -448,8 +563,10 @@
   document.getElementById("btnModalCancel").addEventListener("click", closeModal);
   document.getElementById("btnModalCreate").addEventListener("click", createFromModal);
 
-  // ===================== Init =======================
-  loadNotes();
+  // Allow Enter key in login fields
+  elLoginPassword.addEventListener("keydown", e => {
+    if (e.key === "Enter") signIn();
+  });
 </script>
 
 </body>
