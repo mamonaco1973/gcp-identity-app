@@ -336,7 +336,7 @@
       notesApp.style.display    = "grid";
       btnSignOut.style.display  = "";
       elUserEmail.textContent   = user.email;
-      loadNotes();
+      loadNotes(true);
     } else {
       loginPanel.style.display  = "";
       notesApp.style.display    = "none";
@@ -387,7 +387,7 @@
   function setListStatus(msg) { elListStatus.textContent = msg || ""; }
 
   // ===================== CRUD =======================
-  async function loadNotes() {
+  async function loadNotes(autoSelect = false) {
     setBusy(true);
     setListStatus("Loading...");
     try {
@@ -395,6 +395,10 @@
       notes = res.items || [];
       renderNotes();
       setListStatus(`Loaded ${notes.length} note(s)`);
+      // Auto-select the first note on login if none is already selected.
+      if (autoSelect && notes.length > 0 && !selectedId) {
+        await loadNote(notes[0].id);
+      }
     } catch (e) {
       setListStatus("Error loading notes: " + e.message);
     } finally {

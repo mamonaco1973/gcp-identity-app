@@ -1,30 +1,33 @@
-#GCP #Serverless #CloudFunctions #Firestore #Terraform #Python #CRUD
+#GCP #Serverless #CloudFunctions #Firestore #Terraform #Python #IdentityPlatform #APIGateway
 
-*Build a Serverless CRUD API on Google Cloud (Cloud Functions + Firestore)*
+*Secure Serverless API on Google Cloud in Minutes (Identity Platform + API Gateway)*
 
-Deploy a fully serverless notes API on Google Cloud Platform using Terraform, Cloud Functions 2nd Gen, and Firestore. The backend runs on a single Python Cloud Function that routes all CRUD operations internally, backed by a Firestore Native mode database, with a static web frontend served directly from Cloud Storage.
+Deploy a fully authenticated serverless notes API on Google Cloud Platform using Terraform, Cloud Functions 2nd Gen, Firestore, and Cloud API Gateway. Users sign in via Identity Platform (Firebase Auth), and every API request is validated against a Firebase JWT before reaching the Cloud Function — with data scoped per user at the Firestore layer.
 
-In this project we build a clean REST API with full Create, Read, Update, and Delete support — wired to a real database, deployed with a single script, and tested through a browser-based UI with no server to manage.
+In this project we build a secure REST API with full Create, Read, Update, and Delete support — protected by real JWT authentication, deployed with a single script, and tested through a browser-based SPA with no server to manage.
 
 WHAT YOU'LL LEARN
-• Deploying Cloud Functions 2nd Gen with Terraform using google_cloudfunctions2_function
-• Packaging and uploading Python source code to GCS with archive_file and a source bucket
-• Provisioning Firestore (Native mode) and routing all five CRUD operations in a single function
-• Hosting a static web frontend on a public GCS bucket
-• Injecting runtime config into HTML templates using envsubst
+• Enabling GCP Identity Platform and configuring email/password sign-in via the REST API
+• Issuing browser API keys scoped to identitytoolkit.googleapis.com with google_apikeys_key
+• Defining a Cloud API Gateway with an OpenAPI spec that validates Firebase JWT tokens
+• Forwarding decoded JWT claims to a private Cloud Function via X-Apigateway-Api-Userinfo
+• Scoping Firestore reads and writes to the authenticated user's UID (sub claim)
+• Hosting a static SPA on a public GCS bucket with runtime config loaded from config.json
 
 INFRASTRUCTURE DEPLOYED
-• Cloud Function (2nd Gen, Python 3.11, HTTP trigger, public via allUsers run.invoker)
+• Cloud Function (2nd Gen, Python 3.11, HTTP trigger, private — invoked only by gateway SA)
+• Cloud API Gateway with OpenAPI 2.0 spec (Firebase JWT securityDefinitions)
+• Identity Platform (email/password sign-in, Firebase JS SDK)
 • GCS bucket for function source code (zip archive, content-addressed)
 • Firestore database (Native mode, us-central1)
-• Service account (notes-sa) with scoped roles/datastore.user
+• Service accounts: notes-sa (Firestore), notes-gateway-sa (Cloud Run invoker)
 • GCS bucket hosting a static web frontend
 
 GitHub
-https://github.com/mamonaco1973/gcp-crud-example
+https://github.com/mamonaco1973/gcp-identity-app
 
 README
-https://github.com/mamonaco1973/gcp-crud-example/blob/main/README.md
+https://github.com/mamonaco1973/gcp-identity-app/blob/main/README.md
 
 TIMESTAMPS
 00:00 Introduction
