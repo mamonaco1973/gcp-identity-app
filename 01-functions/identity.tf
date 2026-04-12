@@ -1,15 +1,5 @@
-# ─── Identity Platform ───────────────────────────────────────────────────────
-
-resource "google_identity_platform_config" "default" {
-  project = local.credentials.project_id
-
-  sign_in {
-    email {
-      enabled           = true
-      password_required = true
-    }
-  }
-}
+# Identity Platform is enabled and configured via api_setup.sh (REST API).
+# It cannot be disabled once active, so it is intentionally not managed here.
 
 # ─── Browser API Key ─────────────────────────────────────────────────────────
 # Scoped to Identity Platform only — safe to embed in the SPA.
@@ -25,7 +15,6 @@ resource "google_apikeys_key" "webapp" {
     }
   }
 
-  depends_on = [google_identity_platform_config.default]
 }
 
 output "firebase_api_key" {

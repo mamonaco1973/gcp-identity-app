@@ -30,6 +30,17 @@ gcloud services enable \
   servicecontrol.googleapis.com \
   apikeys.googleapis.com
 
+echo "NOTE: Enabling Identity Platform email/password sign-in..."
+access_token=$(gcloud auth print-access-token)
+curl -sf -X PATCH \
+  "https://identitytoolkit.googleapis.com/v2/projects/${project_id}/config?updateMask=signIn.email.enabled,signIn.email.passwordRequired" \
+  -H "Authorization: Bearer ${access_token}" \
+  -H "Content-Type: application/json" \
+  -H "X-Goog-User-Project: ${project_id}" \
+  -d '{"signIn":{"email":{"enabled":true,"passwordRequired":true}}}' \
+  > /dev/null
+echo "NOTE: Identity Platform configured."
+
 echo "NOTE: Ensuring Firestore database exists in native mode..."
 gcloud firestore databases create \
   --location=us-central1 \

@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36">
+  <diagram id="Ht1M8jgEwFfnCIfOTk4-" name="Page-1">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="border" parent="1" style="whiteSpace=wrap;fillColor=none;rounded=0;labelBackgroundColor=none;fontColor=none;noLabel=1;" value="" vertex="1">
+          <mxGeometry height="380" width="720" x="155" y="-750" as="geometry" />
+        </mxCell>
+        <mxCell id="gcp-label" parent="1" style="shape=mxgraph.gcp2.google_cloud_platform;fillColor=#F6F6F6;strokeColor=none;shadow=0;gradientColor=none;html=1;points=[];align=left;fontSize=17;labelPosition=right;verticalLabelPosition=middle;verticalAlign=middle;spacing=8;" value="Google Cloud Platform - US Central Region" vertex="1">
+          <mxGeometry height="26.25" width="32" x="155" y="-781" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/general/Browser.svg;labelBackgroundColor=none;" value="Browser" vertex="1">
+          <mxGeometry height="50" width="57" x="25" y="-666" as="geometry" />
+        </mxCell>
+        <mxCell id="gcs-website" parent="1" style="editableCssRules=.*;html=1;shape=image;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMjAgMTYiPiYjeGE7CTxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+JiN4YTsJLnN0MHtmaWxsOiM0Mjg1ZjQ7fSYjeGE7CS5zdDF7ZmlsbDojNjY5ZGY2O30mI3hhOwkuc3Qye2ZpbGw6I2FlY2JmYTt9JiN4YTsJLnN0M3tmaWxsOiNmZmY7fSYjeGE7CTwvc3R5bGU+JiN4YTsJPHBhdGggY2xhc3M9InN0MiIgZD0iTTAgMGgyMHY3SDB6Ii8+JiN4YTsJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE4IDBoMnY3aC0yeiIvPiYjeGE7CTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xOCA3bDItN2gtMnoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMCAwaDJ2N0gweiIvPiYjeGE7CTxnIGNsYXNzPSJzdDMiPiYjeGE7CQk8cGF0aCBkPSJNNCAzaDZ2MUg0eiIvPiYjeGE7CQk8cmVjdCB4PSIxMyIgeT0iMiIgd2lkdGg9IjMiIGhlaWdodD0iMyIgcng9IjEuNSIvPiYjeGE7CTwvZz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMCA5aDIwdjdIMHoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTggOWgydjdoLTJ6Ii8+JiN4YTsJPHBhdGggY2xhc3M9InN0MCIgZD0iTTE4IDE2bDItN2gtMnoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMCA5aDJ2N0gweiIvPiYjeGE7CTxnIGNsYXNzPSJzdDMiPiYjeGE7CQk8cGF0aCBkPSJNNCAxMmg2djFINHoiLz4mI3hhOwkJPHJlY3QgeD0iMTMiIHk9IjExIiB3aWR0aD0iMyIgaGVpZ2h0PSIzIiByeD0iMS41Ii8+JiN4YTsJPC9nPiYjeGE7PC9zdmc+;fontStyle=0;fontColor=light-dark(#000000, #6a6a6a);fontSize=12;align=center;" value="Static Website&lt;div&gt;Cloud Storage&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="62.5" x="185" y="-666" as="geometry" />
+        </mxCell>
+        <mxCell id="identity-platform" parent="1" style="sketch=0;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;spacingTop=-6;fontSize=11;fontStyle=0;fontColor=#000000;shape=mxgraph.gcp2.identity_platform;" value="Identity Platform" vertex="1">
+          <mxGeometry height="50" width="50" x="303" y="-575" as="geometry" />
+        </mxCell>
+        <mxCell id="api-gateway" parent="1" style="sketch=0;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;spacingTop=-6;fontSize=11;fontStyle=0;fontColor=#000000;shape=mxgraph.gcp2.cloud_api_gateway;" value="notes-gateway&#xa;Cloud API Gateway" vertex="1">
+          <mxGeometry height="50" width="50" x="398" y="-666" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud-func" parent="1" style="sketch=0;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;spacingTop=-6;fontSize=11;fontStyle=0;fontColor=#000000;shape=image;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE5Ljk4OTk5OTk3NzExMTgxNjQiIHZpZXdCb3g9IjAgMCAyMCAxOS45ODk5OTk5NzcxMTE4MTY0Ij4mI3hhOwk8c3R5bGUgdHlwZT0idGV4dC9jc3MiPiYjeGE7CS5zdDB7ZmlsbDojNDI4NWY0O30mI3hhOwkuc3Qxe2ZpbGw6IzY2OWRmNjt9JiN4YTsJLnN0MntmaWxsOiNhZWNiZmE7fSYjeGE7PC9zdHlsZT4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMyAzLjk5TDAgNi40MnY3LjEzbDMgMi40NHoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMyAzLjk5bC0zIDQgMy0yem0tMyA4bDMgNC12MnoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMCAxNS45OWw0IDQgMi0yLTYtNnptLjAxLThMNS45OSAybC0yLTJMMCAzLjk5eiIvPiYjeGE7CTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xNyAxNmwzLTIuNDJWNi40NEwxNyA0eiIvPiYjeGE7CTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNyAxNmwzLTQtMyAyem0zLThsLTMtNHYyeiIvPiYjeGE7CTxnIGNsYXNzPSJzdDIiPiYjeGE7CQk8cGF0aCBkPSJNMjAgNGwtNC00LTIgMiA2IDZ6bS0uMDEgOGwtNS45OCA1Ljk5IDIgMkwyMCAxNnoiLz4mI3hhOwkJPGNpcmNsZSBjeD0iNiIgY3k9IjkuOTkiIHI9IjEiLz4mI3hhOwkJPGNpcmNsZSBjeD0iMTAiIGN5PSI5Ljk5IiByPSIxIi8+JiN4YTsJCTxjaXJjbGUgY3g9IjEzLjk5IiBjeT0iOS45OSIgcj0iMSIvPiYjeGE7CTwvZz4mI3hhOzwvc3ZnPg==;" value="notes&#xa;Cloud Functions (2nd Gen)&#xa;Python 3.11" vertex="1">
+          <mxGeometry height="50" width="50" x="565" y="-666" as="geometry" />
+        </mxCell>
+        <mxCell id="func-storage" parent="1" style="editableCssRules=.*;html=1;shape=image;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMjAgMTYiPiYjeGE7CTxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+JiN4YTsJLnN0MHtmaWxsOiM0Mjg1ZjQ7fSYjeGE7CS5zdDF7ZmlsbDojNjY5ZGY2O30mI3hhOwkuc3Qye2ZpbGw6I2FlY2JmYTt9JiN4YTsJLnN0M3tmaWxsOiNmZmY7fSYjeGE7CTwvc3R5bGU+JiN4YTsJPHBhdGggY2xhc3M9InN0MiIgZD0iTTAgMGgyMHY3SDB6Ii8+JiN4YTsJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE4IDBoMnY3aC0yeiIvPiYjeGE7CTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xOCA3bDItN2gtMnoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMCAwaDJ2N0gweiIvPiYjeGE7CTxnIGNsYXNzPSJzdDMiPiYjeGE7CQk8cGF0aCBkPSJNNCAzaDZ2MUg0eiIvPiYjeGE7CQk8cmVjdCB4PSIxMyIgeT0iMiIgd2lkdGg9IjMiIGhlaWdodD0iMyIgcng9IjEuNSIvPiYjeGE7CTwvZz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMCA5aDIwdjdIMHoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTggOWgydjdoLTJ6Ii8+JiN4YTsJPHBhdGggY2xhc3M9InN0MCIgZD0iTTE4IDE2bDItN2gtMnoiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMCA5aDJ2N0gweiIvPiYjeGE7CTxnIGNsYXNzPSJzdDMiPiYjeGE7CQk8cGF0aCBkPSJNNCAxMmg2djFINHoiLz4mI3hhOwkJPHJlY3QgeD0iMTMiIHk9IjExIiB3aWR0aD0iMyIgaGVpZ2h0PSIzIiByeD0iMS41Ii8+JiN4YTsJPC9nPiYjeGE7PC9zdmc+;fontStyle=0;fontColor=light-dark(#000000, #6a6a6a);fontSize=12;align=center;" value="func code&lt;div&gt;source bucket&lt;/div&gt;" vertex="1">
+          <mxGeometry height="38.4" width="48" x="566" y="-490" as="geometry" />
+        </mxCell>
+        <mxCell id="firestore" parent="1" style="sketch=0;html=1;verticalAlign=top;labelPosition=center;verticalLabelPosition=bottom;align=center;spacingTop=-6;fontSize=11;fontStyle=0;fontColor=#000000;shape=image;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyIgd2lkdGg9IjMyMy45MDU2MTAzOTg2NzUxNSIgaGVpZ2h0PSIzNzYuNDIyMjk0OTYzNjg0MDciIHZpZXdCb3g9Ii0wLjA5NzAwMDAwMjg2MTAyMjk1IDAuMjg3OTk5OTg3NjAyMjMzOSA4NS42OTk5OTY5NDgyNDIxOSA5OS41OTUwMDEyMjA3MDMxMiI+JiN4YTs8c3R5bGUgdHlwZT0idGV4dC9jc3MiPiYjeGE7CS5zdDB7ZmlsbDojYWVjYmZhO30mI3hhOwkuc3Qxe2ZpbGw6IzY2OWRmNjt9JiN4YTsJLnN0MntmaWxsOiM0Mjg1ZjQ7fSYjeGE7PC9zdHlsZT4mI3hhOwk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNLS4wOTcgNzUuODE1VjU1Ljg3NGw0Mi44NS0yMC4xODN2MTkuMDd6bTAtMzUuNDAzVjIwLjQ3MUw0Mi43NTMuMjg4djE5LjA3eiIvPiYjeGE7CTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik04NS42MDMgNzUuODE1VjU1Ljg3NGwtNDIuODUtMjAuMTgzdjE5LjA3em0wLTM1LjQwM1YyMC40NzFMNDIuNzUzLjI4OHYxOS4wN3oiLz4mI3hhOwk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNNDIuNzUzIDgwLjMxNGwxNi4yMTctNy41MjUgMjEuMDg0IDkuNzE3LTM3LjMwMSAxNy4zNzd6Ii8+JiN4YTs8L3N2Zz4=;" value="notes collection&lt;div&gt;Cloud Firestore&lt;/div&gt;" vertex="1">
+          <mxGeometry height="58" width="50" x="748" y="-670" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-web" edge="1" parent="1" source="browser" style="endArrow=classic;startArrow=classic;startFill=1;html=1;rounded=0;dashed=1;labelBackgroundColor=none;spacingTop=-20;" target="gcs-website" value="GET index.html / config.json">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-idp" edge="1" parent="1" source="browser" style="endArrow=classic;startArrow=classic;startFill=1;html=1;rounded=0;dashed=1;labelBackgroundColor=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="identity-platform" value="sign-in / ID token">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-gateway" edge="1" parent="1" source="browser" style="endArrow=classic;startArrow=none;html=1;rounded=0;dashed=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="api-gateway" value="Bearer token">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="-641" />
+              <mxPoint x="100" y="-720" />
+              <mxPoint x="423" y="-720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-idp-gateway" edge="1" parent="1" source="identity-platform" style="endArrow=classic;startArrow=classic;startFill=0;endFill=0;html=1;rounded=0;dashed=1;labelBackgroundColor=none;" target="api-gateway" value="JWKS validation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-gateway-func" edge="1" parent="1" source="api-gateway" style="endArrow=classic;startArrow=none;html=1;rounded=0;dashed=0;labelBackgroundColor=none;" target="cloud-func" value="JWT claims (private)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-func-firestore" edge="1" parent="1" source="cloud-func" style="endArrow=classic;startArrow=classic;startFill=1;html=1;rounded=0;labelBackgroundColor=none;spacingTop=-20;dashed=1;" target="firestore" value="CRUD (owner=sub)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-func-storage" edge="1" parent="1" source="cloud-func" style="endArrow=none;html=1;rounded=0;dashed=1;labelBackgroundColor=none;" target="func-storage" value="code zip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
