@@ -4,8 +4,12 @@
 # ─── Browser API Key ─────────────────────────────────────────────────────────
 # Scoped to Identity Platform only — safe to embed in the SPA.
 
+resource "random_id" "apikey_suffix" {
+  byte_length = 3
+}
+
 resource "google_apikeys_key" "webapp" {
-  name         = "notes-webapp-key"
+  name         = "notes-webapp-key-${random_id.apikey_suffix.hex}"
   display_name = "Notes Web App API Key"
   project      = local.credentials.project_id
 
