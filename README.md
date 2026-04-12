@@ -4,8 +4,6 @@ This project delivers a fully automated **serverless, authenticated CRUD API**
 on Google Cloud Platform, built using **Cloud Functions (2nd Gen)**,
 **Cloud Firestore**, **Cloud API Gateway**, and **Identity Platform**.
 
-![webapp](webapp.png)
-
 It uses **Terraform** and **Python** to provision and deploy a **stateless,
 identity-aware REST backend** that exposes HTTP endpoints for managing notes —
 all without running or managing any virtual machines or containers.
@@ -14,7 +12,7 @@ A lightweight **HTML web frontend** (served from Cloud Storage) handles user
 sign-in and interacts directly with the API, allowing users to create, view,
 update, and delete their own notes from a browser.
 
-![diagram](gcp-identity-app.png)
+![webapp](webapp.png)
 
 This design extends a basic serverless CRUD architecture with a full
 authentication layer. Cloud API Gateway validates Firebase ID tokens before
@@ -45,6 +43,8 @@ Key capabilities demonstrated:
 ---
 
 ## Architecture
+
+![diagram](gcp-identity-app.png)
 
 ```
 Browser (SPA on GCS)
