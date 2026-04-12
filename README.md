@@ -14,7 +14,7 @@ A lightweight **HTML web frontend** (served from Cloud Storage) handles user
 sign-in and interacts directly with the API, allowing users to create, view,
 update, and delete their own notes from a browser.
 
-![diagram](gcp-crud-example.png)
+![diagram](gcp-identity-app.png)
 
 This design extends a basic serverless CRUD architecture with a full
 authentication layer. Cloud API Gateway validates Firebase ID tokens before
