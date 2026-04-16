@@ -4,17 +4,17 @@
 
 ## Introduction
 
-[ Screen recording of the Notes Demo web app — creating, editing, and deleting notes in the browser ]
+[ Show web application log in ]
 
-"Do you need a working serverless API on Google Cloud?
+Do you want a secure, serverless API on Google Cloud?
 
 [ Architecture diagram — walk through it left to right: browser, Cloud Storage, Cloud Function, Firestore ]
 
-"In this project we build a fully serverless notes API using Cloud Functions, Firestore, and Cloud Storage — all provisioned with Terraform and deployed with a single script."
+In this project, we build a secure notes API using Cloud Functions, Firestore, API Gateway, and Identity Platform.
 
 [Terminal running apply.sh — Terraform output flying by, ending with the website URL ]
 
-"Follow along and in minutes you'll have a working API running on Google Cloud."
+Follow along — and in minutes, you’ll have a secure backend with per-user data isolation.
 
 ---
 
@@ -24,17 +24,34 @@
 
 "Let's walk through the architecture before we build."
 
-[ Highlight browser and Cloud Storage bucket ]
+[ Highlight Browser + Identity Platform ]
 
-"The user opens a static web page — which is just an HTML file served directly from a public Cloud Storage bucket."
+“The browser signs in with Identity Platform and gets a bearer token.”
+
+[ Highlight Browser to Gateway ]
+
+“That token goes with each call to the API Gateway.”
+
+[ Highlight Gateway ]
+
+“The gateway validates the token and rejects anything invalid.”
+
+[ Highlight Gateway to Function ]
+
+“For valid requests, it forwards verified JWT claims to the Cloud Functions.”
 
 [ Highlight Cloud Function ]
 
-"The frontend talks to a Cloud Functions over HTTPS. One Python file handles all the routes — POST to create, GET to list, GET by ID, PUT to update, DELETE to remove. "
+“The Cloud Functions are the API compute layer.
+The Functions are implemented in Python, and the HTTP routes are handled directly in the code.”
+
+[ Highlight Function to Firestore ]
+
+“The function uses the authenticated user ID to store notes by user."
 
 [ Highlight Firestore ]
 
-"The backend stores data in Firestore. Each note is a JSON document, and the Cloud Functions read and write directly to it."
+"Firestore stores the notes data, isolated per user.”
 
 ---
 
