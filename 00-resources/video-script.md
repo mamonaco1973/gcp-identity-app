@@ -10,11 +10,13 @@ Do you want a secure, serverless API on Google Cloud?
 
 [ Architecture diagram — walk through it left to right: browser, Cloud Storage, Cloud Function, Firestore ]
 
+In this project we build a fully serverless notes API using API Gateway, Cloud Functions, and Firestore — secured with Google's Identiy Platform and provisioned entirely with Terraform.
+
 In this project, we build a secure notes API using Cloud Functions, Firestore, API Gateway, and Identity Platform.
 
 [Terminal running apply.sh — Terraform output flying by, ending with the website URL ]
 
-Follow along — and in minutes, you’ll have a secure backend with per-user data isolation.
+Follow along and in minutes you'll have a working authenticated API running in Google Cloud.
 
 ---
 
