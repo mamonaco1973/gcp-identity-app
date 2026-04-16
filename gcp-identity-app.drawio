@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" scale="2" border="15">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" scale="2" border="0">
   <diagram id="Ht1M8jgEwFfnCIfOTk4-" name="Page-1">
     <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -31,9 +31,10 @@
         <mxCell id="e-browser-idp-label" connectable="0" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;Authenticate&lt;/font&gt;" vertex="1">
           <mxGeometry height="20" width="120" x="50" y="120" as="geometry" />
         </mxCell>
-        <mxCell id="e-browser-gateway" edge="1" parent="1" source="YWxguLW4IseTut5F7a9f-2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;startArrow=none;endFill=1;html=1;rounded=0;dashed=1;labelBackgroundColor=none;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.948;exitY=0.625;exitDx=0;exitDy=0;exitPerimeter=0;" target="api-gateway">
+        <mxCell id="e-browser-gateway" edge="1" parent="1" source="YWxguLW4IseTut5F7a9f-2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;startArrow=none;endFill=1;html=1;rounded=0;dashed=1;labelBackgroundColor=none;exitX=0.948;exitY=0.625;exitDx=0;exitDy=0;exitPerimeter=0;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="320" y="295" as="sourcePoint" />
+            <mxPoint x="440" y="297" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e-browser-gateway-label" connectable="0" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;dashed=1;" value="Bearer JWT" vertex="1">
@@ -55,7 +56,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e-func-storage-label" connectable="0" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;code zip&lt;/font&gt;" vertex="1">
-          <mxGeometry height="20" width="60" x="650" y="360" as="geometry" />
+          <mxGeometry height="20" width="60" x="680" y="360" as="geometry" />
         </mxCell>
         <mxCell id="YWxguLW4IseTut5F7a9f-1" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=0.487;exitY=0.067;exitDx=0;exitDy=0;exitPerimeter=0;dashed=1;entryX=-0.008;entryY=0.308;entryDx=0;entryDy=0;entryPerimeter=0;" target="identity-platform" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
