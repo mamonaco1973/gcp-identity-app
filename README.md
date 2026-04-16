@@ -221,12 +221,35 @@ The service account needs permissions to manage Cloud Functions, Firestore,
 Cloud Storage, Cloud Run, Cloud Build, IAM, Identity Platform, API Gateway,
 and API Keys.
 
-## Deploy
-
-Place `credentials.json` in the repo root, then run:
+## Download this Repository
 
 ```bash
-./apply.sh
+git clone https://github.com/mamonaco1973/gcp-identity-app.git
+cd gcp-identity-app
+```
+
+## Build the Code
+
+Place your `credentials.json` in the repo root, then run [apply](apply.sh) to
+provision all infrastructure.
+
+```bash
+~/gcp-identity-app$ ./apply.sh
+NOTE: Running environment validation...
+NOTE: Validating required commands...
+NOTE: gcloud found.
+NOTE: terraform found.
+NOTE: jq found.
+NOTE: credentials.json found.
+NOTE: Authenticating with GCP project: my-project-id
+NOTE: Enabling required GCP APIs...
+NOTE: Enabling Identity Platform email/password sign-in...
+NOTE: Identity Platform configured.
+NOTE: Ensuring Firestore database exists in native mode...
+NOTE: API setup complete.
+NOTE: Deploying backend infrastructure...
+
+Initializing the backend...
 ```
 
 `apply.sh` runs in two phases:
