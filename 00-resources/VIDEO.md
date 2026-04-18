@@ -1,6 +1,6 @@
 #GCP #Serverless #CloudFunctions #Firestore #Terraform #Python #IdentityPlatform #APIGateway
 
-*Secure Serverless API on Google Cloud in Minutes (Identity Platform + API Gateway)*
+*Secure Serverless API on Google Cloud (Identity Platform + API Gateway)*
 
 Deploy a fully authenticated serverless notes API on Google Cloud Platform using Terraform, Cloud Functions 2nd Gen, Firestore, and Cloud API Gateway. Users sign in via Identity Platform (Firebase Auth), and every API request is validated against a Firebase JWT before reaching the Cloud Function — with data scoped per user at the Firestore layer.
 
@@ -31,7 +31,7 @@ https://github.com/mamonaco1973/gcp-identity-app/blob/main/README.md
 
 TIMESTAMPS
 00:00 Introduction
-00:17 Architecture
-00:43 Build the Code
-00:58 Build Results
-01:22 Demo
+00:15 Architecture
+00:40 Build the Code
+00:56 Build Results
+01:39 Demo

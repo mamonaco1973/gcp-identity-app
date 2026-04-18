@@ -6,17 +6,15 @@
 
 [ Show web application log in ]
 
-Do you want a secure, serverless API on Google Cloud?
+Do you need a secure, serverless API on Google Cloud?
 
 [ Architecture diagram — walk through it left to right: browser, Cloud Storage, Cloud Function, Firestore ]
 
-In this project we build a fully serverless notes API using API Gateway, Cloud Functions, and Firestore — secured with Google's Identiy Platform and provisioned entirely with Terraform.
-
-In this project, we build a secure notes API using Cloud Functions, Firestore, API Gateway, and Identity Platform.
+In this project, we build a secure notes API using Cloud Functions, Firestore, API Gateway, and Google's Identity Platform.
 
 [Terminal running apply.sh — Terraform output flying by, ending with the website URL ]
 
-Follow along and in minutes you'll have a working authenticated API running in Google Cloud.
+Follow along and in minutes you'll have a secured serverless API running in Google Cloud.
 
 ---
 
@@ -28,7 +26,7 @@ Follow along and in minutes you'll have a working authenticated API running in G
 
 [ Highlight Browser + Identity Platform ]
 
-“The browser signs in with Identity Platform and gets a bearer token.”
+“The user signs in with Identity Platform, and the browser receives a bearer token for API calls”
 
 [ Highlight Browser to Gateway ]
 
@@ -36,20 +34,12 @@ Follow along and in minutes you'll have a working authenticated API running in G
 
 [ Highlight Gateway ]
 
-“The gateway validates the token and rejects anything invalid.”
-
-[ Highlight Gateway to Function ]
-
-“For valid requests, it forwards verified JWT claims to the Cloud Functions.”
+“The gateway validates the token before calling the Cloud Functions.
 
 [ Highlight Cloud Function ]
 
-“The Cloud Functions are the API compute layer.
-The Functions are implemented in Python, and the HTTP routes are handled directly in the code.”
+“The Cloud Functions are the API compute layer and are implemented in Python.
 
-[ Highlight Function to Firestore ]
-
-“The function uses the authenticated user ID to store notes by user."
 
 [ Highlight Firestore ]
 
@@ -83,17 +73,42 @@ The Functions are implemented in Python, and the HTTP routes are handled directl
 
 ## Build Results
 
-[ GCP Console — Cloud Functions ]
+[ Identity Platform Users]
 
-"The notes Cloud Functions are deployed and public. This is the compute layer for the API."
+"First is the Identity Platform. This is where user accounts are managed"
 
-[ Show function details — runtime, entry point, trigger URL ]
+[ Identify Platform Main ]
 
-"The Cloud Functions are implemented in Python, and the HTTP routes are handled directly in the code."
+A simple email and password provider is used for this application.
 
-[ GCP Console — Firestore ]
+[ Identify Platfom Other Providers]
 
-"Next is Firestore. This is the storage layer for the API."
+Additional third-party identity providers can be configured as needed.
+
+[ GCP Console — API Keys ]
+
+"The browser API key is scoped to Identity Platform and is used in the web application."
+
+[ GCP Console — API Gateway ]
+
+"Next is API Gateway."
+
+[ Show Security Definition / Auth Section ]
+
+"The JWT validation is configured here."
+
+[ Show API call ]
+
+"API Gateway validates the caller's Bearer token before calling the Cloud Function."
+
+[ GCP Console — Cloud Functions, notes ]
+
+"The Cloud Functions are implemented in Python and handles all five routes."
+
+[ GCP Console — Firestore, notes collection ]
+
+"Firestore stores the notes — scoped to the authenticated user by the owner field.
+Firestore stores the notes, scoped to the authenticated user by the owner field
 
 [ GCP Console — Cloud Storage, web bucket ]
 
@@ -101,7 +116,7 @@ The Functions are implemented in Python, and the HTTP routes are handled directl
 
 [ Browser — Notes Demo loads ]
 
-"Open the URL to launch the test application."
+"Navigate to the URL to launch the test application."
 
 ---
 
@@ -109,42 +124,46 @@ The Functions are implemented in Python, and the HTTP routes are handled directl
 
 [ Browser — Notes Demo, open DevTools → Network tab ]
 
-"Open the web app — and the browser debugger so we can watch the API calls."
+"When the application loads we are prompted to login."
 
-[ Refresh page — network calls visible ]
+[ Sign In ]
 
-"When the app loads, it calls the list endpoint. No notes yet."
+Sign in with an existing account — or create one here.
 
-[ Clicking New — modal opens, typing a title, clicking Create ]
+[ Show redirect link ]
 
-"Now let's create a new note by selecting New."
+The Identity Platform re-directs back to callback.html. The page exchanges the authorization code for tokens.
 
-[ Show API working ]
+[ Show initial state ]
 
-"A POST to the function is made which returns the new note's UUID."
+We're now authenticated into the app. Open the browser debugger so we can watch the API calls.
 
-[ Clicking the note in the list ]
+[  Create a new note ]
 
-"The new note is also selected and the API loads the content."
+Create a new note.
+
+[ Show create API call with bearer token ]
+
+"A POST is made with the JWT as a Bearer token."
 
 [ Editing and clicking Save ]
 
-"Now let's update the note and select Save."
+"Now update the note."
 
 [ Show network tab ]
 
-"A PUT call is made — and the updated data is stored in Firestore."
+"The PUT call is made with the Bearer token set."
 
-[ Clicking Delete ]
+[ Delete prompt ]
 
-"Now let's delete the note by selecting Delete."
+"Delete the Note".
 
-[ Show network ]
+[ Show network tab ]
 
-"A DELETE call is made — and the document is removed from Firestore."
+'The DELETE call is made with the Bearer token set."
 
 [ Browser — empty list ]
 
-"In this demo, we've now exercised every API endpoint."
+"In this demo we've exercised every API endpoint — all secured with JWT bearer tokens."
 
 ---
