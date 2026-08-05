@@ -239,10 +239,10 @@ export GOOGLE_OAUTH_CLIENT_ID="123456789-abc.apps.googleusercontent.com"
 export GOOGLE_OAUTH_CLIENT_SECRET="GOCSPX-..."
 ```
 
-Terraform then enables the `google.com` provider and adds `storage.googleapis.com`
-to the domain's authorized domains so the popup works from the GCS-hosted site.
-No API Gateway or Function changes are needed — a Google-issued Firebase ID token
-carries the same issuer and audience as an email/password one.
+Terraform enables the `google.com` provider; `api_setup.sh` adds
+`storage.googleapis.com` to the authorized domains so the popup works from the
+GCS-hosted site. No API Gateway or Function changes are needed — a Google-issued
+Firebase ID token carries the same issuer and audience as an email/password one.
 
 ## Download this Repository
 

@@ -1,8 +1,8 @@
-# Identity Platform is INITIALIZED and its email/password sign-in is turned on by
-# api_setup.sh (REST) — that part stays out of Terraform because the config
-# singleton can't be disabled once active. What Terraform manages here (mirroring
-# gcp-resume-app) is the authorized domains and the optional Google sign-in
-# provider, which are safe to declare and tear down.
+# Identity Platform init, email/password sign-in, AND the authorized domains are
+# all handled by api_setup.sh (REST): the config is a singleton Terraform can't
+# create-manage once Identity Platform is initialized (400 "already enabled").
+# Terraform manages only the optional Google sign-in PROVIDER below — a distinct
+# sub-resource that creates and destroys cleanly.
 
 # ─── Browser API Key ─────────────────────────────────────────────────────────
 # Scoped to Identity Platform only — safe to embed in the SPA.
@@ -27,22 +27,6 @@ resource "google_apikeys_key" "webapp" {
 output "firebase_api_key" {
   value     = google_apikeys_key.webapp.key_string
   sensitive = true
-}
-
-# ─── Identity Platform authorized domains ─────────────────────────────────────
-# Add storage.googleapis.com so the GCS-hosted SPA can open Google sign-in popups
-# without an unauthorized-domain error. The default domains are listed explicitly
-# because Terraform replaces the whole list when it manages this resource.
-
-resource "google_identity_platform_config" "default" {
-  provider = google-beta
-
-  authorized_domains = [
-    "localhost",
-    "${local.credentials.project_id}.firebaseapp.com",
-    "${local.credentials.project_id}.web.app",
-    "storage.googleapis.com",
-  ]
 }
 
 # ─── Google sign-in provider ──────────────────────────────────────────────────

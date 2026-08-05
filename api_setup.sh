@@ -69,6 +69,29 @@ if [ "${patch_code}" -ge 400 ]; then
 fi
 echo "NOTE: Identity Platform configured."
 
+# ------------------------------------------------------------------------------
+# Authorize the GCS-hosted SPA's domain so Google sign-in POPUPS work from it
+# (signInWithPopup throws auth/unauthorized-domain otherwise). Harmless when
+# Google sign-in isn't configured. Include the defaults — the API replaces the
+# whole list. Done here, not Terraform: google_identity_platform_config can't be
+# create-managed once Identity Platform is initialized (400 "already enabled").
+# ------------------------------------------------------------------------------
+echo "NOTE: Authorizing SPA domain for Google sign-in popups..."
+resp=$(curl -sS -w $'\n%{http_code}' -X PATCH \
+  "https://identitytoolkit.googleapis.com/v2/projects/${project_id}/config?updateMask=authorizedDomains" \
+  -H "Authorization: Bearer ${access_token}" \
+  -H "Content-Type: application/json" \
+  -H "X-Goog-User-Project: ${project_id}" \
+  -d "{\"authorizedDomains\":[\"localhost\",\"${project_id}.firebaseapp.com\",\"${project_id}.web.app\",\"storage.googleapis.com\"]}")
+ad_code=$(printf '%s' "${resp}" | tail -n1)
+ad_body=$(printf '%s' "${resp}" | sed '$d')
+if [ "${ad_code}" -ge 400 ]; then
+  echo "ERROR: authorizedDomains PATCH failed (HTTP ${ad_code}):"
+  echo "${ad_body}"
+  exit 1
+fi
+echo "NOTE: Authorized domains set."
+
 echo "NOTE: Ensuring Firestore database exists in native mode..."
 gcloud firestore databases create \
   --location=us-central1 \
