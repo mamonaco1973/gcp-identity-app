@@ -9,7 +9,11 @@ echo "NOTE: Running environment validation..."
 echo "NOTE: Deploying backend infrastructure..."
 cd 01-functions
 terraform init -input=false
-terraform apply -auto-approve
+# Google sign-in provider is provisioned only when these env vars are set
+# (see variables.tf / identity.tf). Unset => email/password only.
+terraform apply -auto-approve \
+  -var="google_oauth_client_id=${GOOGLE_OAUTH_CLIENT_ID:-}" \
+  -var="google_oauth_client_secret=${GOOGLE_OAUTH_CLIENT_SECRET:-}"
 
 GATEWAY_URL=$(terraform output -raw gateway_url)
 FIREBASE_API_KEY=$(terraform output -raw firebase_api_key)

@@ -221,6 +221,29 @@ The service account needs permissions to manage Cloud Functions, Firestore,
 Cloud Storage, Cloud Run, Cloud Build, IAM, Identity Platform, API Gateway,
 and API Keys.
 
+### Optional: "Sign in with Google"
+
+The SPA shows a **Sign in with Google** button. It is provisioned only when you
+supply an OAuth 2.0 Web client — leave the env vars unset to ship email/password
+only (the button will error with `auth/operation-not-allowed`).
+
+1. Configure the **OAuth consent screen** (External; Testing mode + your own
+   account as a test user is enough for a demo).
+2. APIs & Services → Credentials → **Create OAuth client ID → Web application**.
+   Add the authorized redirect URI:
+   `https://<project_id>.firebaseapp.com/__/auth/handler`
+3. Export the credentials before `./apply.sh` (env-driven; nothing lands in git):
+
+```bash
+export GOOGLE_OAUTH_CLIENT_ID="123456789-abc.apps.googleusercontent.com"
+export GOOGLE_OAUTH_CLIENT_SECRET="GOCSPX-..."
+```
+
+Terraform then enables the `google.com` provider and adds `storage.googleapis.com`
+to the domain's authorized domains so the popup works from the GCS-hosted site.
+No API Gateway or Function changes are needed — a Google-issued Firebase ID token
+carries the same issuer and audience as an email/password one.
+
 ## Download this Repository
 
 ```bash
